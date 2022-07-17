@@ -50,6 +50,8 @@ namespace Padoru.Localization
 				var file = JsonConvert.DeserializeObject<LocalizationFile>(json);
 				files.Add(fileName, file);
 
+				Debug.Log($"Local file loaded {fullPath}", Constants.LOCALIZATION_LOG_CHANNEL);
+
 				return true;
 			}
 			catch (Exception e)
