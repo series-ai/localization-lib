@@ -1,64 +1,44 @@
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using Padoru.Core.Files;
+using Padoru.Core;
 using System.IO;
 
 using Debug = Padoru.Diagnostics.Debug;
 
 namespace Padoru.Localization
 {
-	public class LocalFilesProvider : ILocalizationFilesProvider
+	public class LocalFilesLoader : ILocalizationFilesLoader
 	{
-		private Dictionary<string, LocalizationFile> files = new Dictionary<string, LocalizationFile>();
-
+		private IFileManager fileManager;
 		private string path;
 		private string fileExtension;
 
-		public LocalFilesProvider(string path, string fileExtension)
+		public LocalFilesLoader(string path, string fileExtension)
 		{
 			this.path = path;
 			this.fileExtension = fileExtension;
+
+			fileManager = Locator.GetService<IFileManager>();
 		}
 
-		public LocalizationFile GetFile(string fileName)
-		{
-			if (!files.ContainsKey(fileName))
-			{
-				if (!LoadFile(fileName))
-				{
-					return null;
-				}
-			}
-
-			return files[fileName];
-		}
-
-		// TODO: Use FileManager when there is one
-		private bool LoadFile(string fileName)
+		public LocalizationFile LoadFile(string fileName)
 		{
 			var fullPath = Path.Combine(path, fileName + "." + fileExtension);
 
-			if (!File.Exists(fullPath))
+			var uri = Protocols.LOCAL_JSON_PPROTOCOL + fullPath;
+
+			if (!fileManager.Exists(uri))
 			{
 				Debug.LogError($"Cannot load file {fullPath} because it does not exist", Constants.LOCALIZATION_LOG_CHANNEL);
-				return false;
+				return null;
 			}
 
-			var json = File.ReadAllText(fullPath);
-			try
+			LocalizationFile result = null;
+			fileManager.Get<LocalizationFile>(uri, (file) =>
 			{
-				var file = JsonConvert.DeserializeObject<LocalizationFile>(json);
-				files.Add(fileName, file);
+				result = file.Data;
+			});
 
-				Debug.Log($"Local file loaded {fullPath}", Constants.LOCALIZATION_LOG_CHANNEL);
-
-				return true;
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e, Constants.LOCALIZATION_LOG_CHANNEL);
-				return false;
-			}
+			return result;
 		}
 	}
 }

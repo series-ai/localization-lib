@@ -13,8 +13,8 @@ namespace Padoru.Localization
         {
             var path = Path.Combine(Application.dataPath, projectPath);
 
-            var filesProvider = new LocalFilesProvider(path, "json");
-            var localizationManager = new LocalizationManager(filesProvider, language);
+            var filesLoader = new LocalFilesLoader(path, "json");
+            var localizationManager = new LocalizationManager(filesLoader, language);
 
             Locator.RegisterService<ILocalizationManager>(localizationManager);
         }

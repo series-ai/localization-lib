@@ -1,7 +1,7 @@
 namespace Padoru.Localization
 {
-	public interface ILocalizationFilesProvider
+	public interface ILocalizationFilesLoader
 	{
-		LocalizationFile GetFile(string fileName);
+		LocalizationFile LoadFile(string fileName);
 	}
 }

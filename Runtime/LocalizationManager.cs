@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using Debug = Padoru.Diagnostics.Debug;
 
@@ -7,21 +8,22 @@ namespace Padoru.Localization
 	public class LocalizationManager : ILocalizationManager
 	{
 		private Languages language;
-		private ILocalizationFilesProvider filesProvider;
+		private ILocalizationFilesLoader filesLoader;
+		private Dictionary<string, LocalizationFile> files = new Dictionary<string, LocalizationFile>();
 
 		public event Action OnLanguageChanged;
 
-		public LocalizationManager(ILocalizationFilesProvider filesProvider, Languages language)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages language)
 		{
 			Debug.Log($"Initialized on {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 
-			this.filesProvider = filesProvider;
+			this.filesLoader = filesLoader;
 			this.language = language;
 		}
 
 		public string GetLocalizedText(string fileName, string entryName)
 		{
-			var file = filesProvider.GetFile(fileName);
+			var file = GetFile(fileName);
 			if(file == null)
 			{
 				throw new Exception($"Could not find a localization file of name: {fileName}");
@@ -47,6 +49,21 @@ namespace Padoru.Localization
 			Debug.Log($"Language changed to {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 
 			OnLanguageChanged?.Invoke();
+		}
+
+		private LocalizationFile GetFile(string fileName)
+		{
+			if (!files.ContainsKey(fileName))
+			{
+				var file = filesLoader.LoadFile(fileName);
+				if (file != null)
+				{
+					files.Add(fileName, file);
+					Debug.Log($"Localization file loaded {fileName}", Constants.LOCALIZATION_LOG_CHANNEL);
+				}
+			}
+
+			return files[fileName];
 		}
 	}
 }
