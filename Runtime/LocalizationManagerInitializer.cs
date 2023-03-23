@@ -1,5 +1,6 @@
 ﻿using Padoru.Core;
 using System.IO;
+using Padoru.Core.Files;
 using UnityEngine;
 
 namespace Padoru.Localization
@@ -13,15 +14,17 @@ namespace Padoru.Localization
         {
             var path = Path.Combine(Application.dataPath, projectPath);
 
-            var filesLoader = new LocalFilesLoader(path, "json");
+            var fileManager = Locator.Get<IFileManager>();
+            
+            var filesLoader = new LocalFilesLoader(path, "json", fileManager);
             var localizationManager = new LocalizationManager(filesLoader, language);
 
-            Locator.RegisterService<ILocalizationManager>(localizationManager);
+            Locator.Register<ILocalizationManager>(localizationManager);
         }
 
         public void Shutdown()
         {
-            Locator.UnregisterService<ILocalizationManager>();
+            Locator.Unregister<ILocalizationManager>();
         }
     }
 }

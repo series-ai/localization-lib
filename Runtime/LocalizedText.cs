@@ -24,7 +24,7 @@ namespace Padoru.Localization
 			text = GetComponent<Text>();
 			tmpText = GetComponent<TMP_Text>();
 
-			localizationManager = Locator.GetService<ILocalizationManager>();
+			localizationManager = Locator.Get<ILocalizationManager>();
 			localizationManager.OnLanguageChanged += UpdateText;
 
 			UpdateText();

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using Debug = Padoru.Diagnostics.Debug;
 
 namespace Padoru.Localization
@@ -9,7 +9,7 @@ namespace Padoru.Localization
 	{
 		private Languages language;
 		private ILocalizationFilesLoader filesLoader;
-		private Dictionary<string, LocalizationFile> files = new Dictionary<string, LocalizationFile>();
+		private Dictionary<string, LocalizationFile> files = new();
 
 		public event Action OnLanguageChanged;
 
@@ -19,6 +19,17 @@ namespace Padoru.Localization
 
 			this.filesLoader = filesLoader;
 			this.language = language;
+		}
+
+		public async Task LoadFile(string fileName)
+		{
+			var file = await filesLoader.LoadFile(fileName);
+			
+			if (file != null)
+			{
+				files.Add(fileName, file);
+				Debug.Log($"Localization file loaded {fileName}", Constants.LOCALIZATION_LOG_CHANNEL);
+			}
 		}
 
 		public string GetLocalizedText(string fileName, string entryName)
@@ -55,12 +66,7 @@ namespace Padoru.Localization
 		{
 			if (!files.ContainsKey(fileName))
 			{
-				var file = filesLoader.LoadFile(fileName);
-				if (file != null)
-				{
-					files.Add(fileName, file);
-					Debug.Log($"Localization file loaded {fileName}", Constants.LOCALIZATION_LOG_CHANNEL);
-				}
+				throw new Exception("File not loaded: {fileName}");
 			}
 
 			return files[fileName];

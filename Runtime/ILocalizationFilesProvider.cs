@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Padoru.Localization
 {
 	public interface ILocalizationFilesLoader
 	{
-		LocalizationFile LoadFile(string fileName);
+		Task<LocalizationFile> LoadFile(string fileName);
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Padoru.Localization
 {
@@ -7,6 +8,8 @@ namespace Padoru.Localization
 		event Action OnLanguageChanged;
 
 		void SetLanguage(Languages language);
+
+		Task LoadFile(string fileName);
 
 		string GetLocalizedText(string fileName, string entryName);
 	}
