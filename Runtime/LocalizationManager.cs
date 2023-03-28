@@ -15,6 +15,8 @@ namespace Padoru.Localization
 		private string filesDirectory;
 		private string filesExtension;
 
+		public Languages CurrentLanguage => language;
+		
 		public event Action OnLanguageChanged;
 
 		public LocalizationManager(

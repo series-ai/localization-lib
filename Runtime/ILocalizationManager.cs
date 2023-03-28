@@ -5,6 +5,8 @@ namespace Padoru.Localization
 {
 	public interface ILocalizationManager
 	{
+		Languages CurrentLanguage { get; }
+		
 		event Action OnLanguageChanged;
 
 		void SetLanguage(Languages language);
