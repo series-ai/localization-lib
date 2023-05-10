@@ -4,6 +4,6 @@ namespace Padoru.Localization
 {
 	public interface ILocalizationFilesLoader
 	{
-		Task<LocalizationFile> LoadFile(string fileUri);
+		Task<ILocalizationFile> LoadFile(string fileUri);
 	}
 }

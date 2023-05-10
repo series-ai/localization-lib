@@ -9,7 +9,7 @@ namespace Padoru.Localization
 	public class LocalizationManager : ILocalizationManager
 	{
 		private readonly ILocalizationFilesLoader filesLoader;
-		private readonly Dictionary<string, LocalizationFile> files = new();
+		private readonly Dictionary<string, ILocalizationFile> files = new();
 		
 		private Languages language;
 
@@ -42,6 +42,16 @@ namespace Padoru.Localization
 			}
 		}
 
+		public void RegisterFile(ILocalizationFile file)
+		{
+			if (file != null && !files.ContainsKey(file.FileName))
+			{
+				files.Add(file.FileName, file);
+				
+				Debug.Log($"Localization file registered {file.FileName}", Constants.LOCALIZATION_LOG_CHANNEL);
+			}
+		}
+
 		public string GetLocalizedText(string fileName, string entryName)
 		{
 			var file = GetFile(fileName);
@@ -51,17 +61,17 @@ namespace Padoru.Localization
 				throw new Exception($"Could not find a localization file of name: {fileName}");
 			}
 
-			if(!file.entries.ContainsKey(entryName))
+			if(!file.Entries.ContainsKey(entryName))
 			{
 				throw new Exception($"The file {fileName} does not contain an entry for {entryName}");
 			}
 
-			if (!file.entries[entryName].ContainsKey(language))
+			if (!file.Entries[entryName].ContainsKey(language))
 			{
 				throw new Exception($"The entry {entryName} of the file {fileName} is not localized on language: {language}");
 			}
 
-			return file.entries[entryName][language];
+			return file.Entries[entryName][language];
 		}
 
 		public void SetLanguage(Languages language)
@@ -73,7 +83,7 @@ namespace Padoru.Localization
 			OnLanguageChanged?.Invoke();
 		}
 
-		private LocalizationFile GetFile(string fileName)
+		private ILocalizationFile GetFile(string fileName)
 		{
 			if (!files.ContainsKey(fileName))
 			{

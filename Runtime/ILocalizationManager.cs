@@ -13,6 +13,8 @@ namespace Padoru.Localization
 
 		Task LoadFile(string fileUri);
 
+		void RegisterFile(ILocalizationFile file);
+
 		string GetLocalizedText(string fileName, string entryName);
 	}
 }

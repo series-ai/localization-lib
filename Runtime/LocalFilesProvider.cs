@@ -13,7 +13,7 @@ namespace Padoru.Localization
 			this.fileManager = fileManager;
 		}
 
-		public async Task<LocalizationFile> LoadFile(string fileUri)
+		public async Task<ILocalizationFile> LoadFile(string fileUri)
 		{
 			if (!await fileManager.Exists(fileUri))
 			{
