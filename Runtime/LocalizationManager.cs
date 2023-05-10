@@ -8,48 +8,44 @@ namespace Padoru.Localization
 {
 	public class LocalizationManager : ILocalizationManager
 	{
+		private readonly ILocalizationFilesLoader filesLoader;
+		private readonly Dictionary<string, LocalizationFile> files = new();
+		
 		private Languages language;
-		private ILocalizationFilesLoader filesLoader;
-		private Dictionary<string, LocalizationFile> files = new();
-		private string protocol;
-		private string filesDirectory;
-		private string filesExtension;
 
 		public Languages CurrentLanguage => language;
 		
 		public event Action OnLanguageChanged;
 
-		public LocalizationManager(
-			ILocalizationFilesLoader filesLoader, 
-			Languages language,
-			string protocol,
-			string filesDirectory,
-			string filesExtension)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages language)
 		{
 			Debug.Log($"Initialized on {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 
-			this.filesLoader = filesLoader;
 			this.language = language;
-			this.protocol = protocol;
-			this.filesDirectory = filesDirectory;
-			this.filesExtension = filesExtension;
+
+			this.filesLoader = filesLoader;
 		}
 
-		public async Task LoadFile(string fileName)
+		public async Task LoadFile(string fileUri)
 		{
-			var uri = GetFileUri(fileName);
-			var file = await filesLoader.LoadFile(uri);
+			var file = await filesLoader.LoadFile(fileUri);
 			
 			if (file != null)
 			{
+				var uri = new Uri(fileUri);
+				
+				var fileName = Path.GetFileNameWithoutExtension(uri.LocalPath);
+				
 				files.Add(fileName, file);
-				Debug.Log($"Localization file loaded {fileName}", Constants.LOCALIZATION_LOG_CHANNEL);
+				
+				Debug.Log($"Localization file loaded {fileUri}", Constants.LOCALIZATION_LOG_CHANNEL);
 			}
 		}
 
 		public string GetLocalizedText(string fileName, string entryName)
 		{
 			var file = GetFile(fileName);
+			
 			if(file == null)
 			{
 				throw new Exception($"Could not find a localization file of name: {fileName}");
@@ -81,15 +77,10 @@ namespace Padoru.Localization
 		{
 			if (!files.ContainsKey(fileName))
 			{
-				throw new Exception("File not loaded: {fileName}");
+				throw new Exception($"File not loaded: {fileName}");
 			}
 
 			return files[fileName];
-		}
-
-		private string GetFileUri(string fileName)
-		{
-			return Path.Combine(protocol + filesDirectory, fileName + filesExtension);
 		}
 	}
 }

@@ -11,7 +11,7 @@ namespace Padoru.Localization
 
 		void SetLanguage(Languages language);
 
-		Task LoadFile(string fileName);
+		Task LoadFile(string fileUri);
 
 		string GetLocalizedText(string fileName, string entryName);
 	}

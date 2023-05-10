@@ -4,11 +4,11 @@ using Debug = Padoru.Diagnostics.Debug;
 
 namespace Padoru.Localization
 {
-	public class LocalFilesLoader : ILocalizationFilesLoader
+	public class FileManagerFilesLoader : ILocalizationFilesLoader
 	{
-		private IFileManager fileManager;
+		private readonly IFileManager fileManager;
 
-		public LocalFilesLoader(IFileManager fileManager)
+		public FileManagerFilesLoader(IFileManager fileManager)
 		{
 			this.fileManager = fileManager;
 		}
