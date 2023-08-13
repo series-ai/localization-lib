@@ -1,7 +1,11 @@
 {
   "name": "com.padoru.localization-lib",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "displayName": "Padoru Localization",
   "description": "A library to handle language localization in Unity games",
-  "unity": "2021.3"
+  "unity": "2021.3",
+  "author": {
+    "name": "Padoru Games",
+    "url": "https://github.com/PadoruGames/localization-lib"
+  }
 }
