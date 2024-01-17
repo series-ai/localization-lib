@@ -10,8 +10,6 @@ namespace Padoru.Localization
 {
 	public class LocalizedText : MonoBehaviour
 	{
-		private const string COULD_NOT_LOCALIZE_STRING = "ENTRY_NOT_FOUND";
-
 		[SerializeField] private string fileName;
 		[SerializeField] private string entryName;
 
@@ -25,7 +23,7 @@ namespace Padoru.Localization
 			tmpText = GetComponent<TMP_Text>();
 
 			localizationManager = Locator.Get<ILocalizationManager>();
-			localizationManager.OnLanguageChanged += UpdateText;
+			localizationManager.OnLanguageChanged += OnLanguageUpdates;
 
 			UpdateText();
 		}
@@ -34,17 +32,22 @@ namespace Padoru.Localization
 		{
 			if(localizationManager != null)
 			{
-				localizationManager.OnLanguageChanged -= UpdateText;
+				localizationManager.OnLanguageChanged -= OnLanguageUpdates;
 			}
+		}
+
+		private void OnLanguageUpdates(Languages language)
+		{
+			UpdateText();
 		}
 
 		private void UpdateText()
 		{
-			var localizedText = COULD_NOT_LOCALIZE_STRING;
+			var localizedText = Constants.COULD_NOT_LOCALIZE_STRING;
 
 			try
 			{
-				localizedText = localizationManager.GetLocalizedText(fileName, entryName);
+				localizedText = localizationManager.GetLocalizedText(entryName);
 			}
 			catch (Exception e)
 			{

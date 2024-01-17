@@ -33,5 +33,8 @@ namespace Padoru.Localization
 		sv_SE = 28, // Swedish
 		fi_FI = 29, // Finnish
 		el_GR = 30, // Greek (modern)
+		pt_BR = 31, // Portuguese (Brazil)
+		zh_Hant = 32, // Chinese (Traditional)
+		es_419 = 33, // Spanish (Latin America)
 	}
 }

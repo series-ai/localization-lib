@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Debug = Padoru.Diagnostics.Debug;
 
@@ -9,88 +8,70 @@ namespace Padoru.Localization
 	public class LocalizationManager : ILocalizationManager
 	{
 		private readonly ILocalizationFilesLoader filesLoader;
-		private readonly Dictionary<string, ILocalizationFile> files = new();
-		
-		private Languages language;
+		private readonly Dictionary<Languages, LocalizationFile> files = new();
 
-		public Languages CurrentLanguage => language;
+		public Languages CurrentLanguage { get; private set; }
 		
-		public event Action OnLanguageChanged;
+		public event Action<Languages> OnLanguageChanged;
 
-		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages language)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage)
 		{
-			Debug.Log($"Initialized on {language}", Constants.LOCALIZATION_LOG_CHANNEL);
+			Debug.Log($"Initialized on {startingLanguage}", Constants.LOCALIZATION_LOG_CHANNEL);
 
-			this.language = language;
+			CurrentLanguage = startingLanguage;
 
 			this.filesLoader = filesLoader;
 		}
 
-		public async Task LoadFile(string fileUri)
+		public async Task LoadFile(Languages language, string fileUri)
 		{
 			var file = await filesLoader.LoadFile(fileUri);
 			
 			if (file != null)
 			{
-				var uri = new Uri(fileUri);
+				files.Add(language, file);
 				
-				var fileName = Path.GetFileNameWithoutExtension(uri.LocalPath);
-				
-				files.Add(fileName, file);
-				
-				Debug.Log($"Localization file loaded {fileUri}", Constants.LOCALIZATION_LOG_CHANNEL);
+				Debug.Log($"Localization file loaded {fileUri} for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 			}
 		}
 
-		public void RegisterFile(ILocalizationFile file)
+		public void RegisterFile(Languages language, LocalizationFile file)
 		{
-			if (file != null && !files.ContainsKey(file.FileName))
+			if (file != null && files.TryAdd(language, file))
 			{
-				files.Add(file.FileName, file);
-				
-				Debug.Log($"Localization file registered {file.FileName}", Constants.LOCALIZATION_LOG_CHANNEL);
+				Debug.Log($"Localization file registered for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 			}
 		}
 
-		public string GetLocalizedText(string fileName, string entryName)
+		public string GetLocalizedText(string entryName)
 		{
-			var file = GetFile(fileName);
+			var file = GetFile(CurrentLanguage);
 			
-			if(file == null)
+			if(!file.entries.ContainsKey(entryName))
 			{
-				throw new Exception($"Could not find a localization file of name: {fileName}");
+				throw new Exception($"The file for {CurrentLanguage} does not contain an entry for {entryName}");
 			}
 
-			if(!file.Entries.ContainsKey(entryName))
-			{
-				throw new Exception($"The file {fileName} does not contain an entry for {entryName}");
-			}
-
-			if (!file.Entries[entryName].ContainsKey(language))
-			{
-				throw new Exception($"The entry {entryName} of the file {fileName} is not localized on language: {language}");
-			}
-
-			return file.Entries[entryName][language];
+			return file.entries[entryName];
 		}
 
 		public void SetLanguage(Languages language)
 		{
-			this.language = language;
+			CurrentLanguage = language;
 
 			Debug.Log($"Language changed to {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 
-			OnLanguageChanged?.Invoke();
+			OnLanguageChanged?.Invoke(language);
 		}
 
-		private ILocalizationFile GetFile(string fileName)
+		private LocalizationFile GetFile(Languages language)
 		{
-			if (!files.ContainsKey(fileName))
+			if (!files.ContainsKey(language))
 			{
-				throw new Exception($"File not loaded: {fileName}");
+				throw new Exception($"No localization file loaded for language: {language}");
 			}
 
-			return files[fileName];
+			return files[language];
 		}
 	}
 }
