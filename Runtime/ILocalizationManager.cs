@@ -7,14 +7,14 @@ namespace Padoru.Localization
 	{
 		Languages CurrentLanguage { get; }
 		
-		event Action OnLanguageChanged;
+		event Action<Languages> OnLanguageChanged;
 
 		void SetLanguage(Languages language);
 
-		Task LoadFile(string fileUri);
+		Task LoadFile(Languages language, string fileUri);
 
-		void RegisterFile(ILocalizationFile file);
+		void RegisterFile(Languages language, LocalizationFile file);
 
-		string GetLocalizedText(string fileName, string entryName);
+		string GetLocalizedText(string entryName);
 	}
 }

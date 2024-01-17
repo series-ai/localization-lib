@@ -3,15 +3,9 @@ using UnityEngine.Scripting;
 
 namespace Padoru.Localization
 {
-	public class LocalizationFile : ILocalizationFile
+	public class LocalizationFile
 	{
-		public string fileName;
-		
-		public Dictionary<string, Dictionary<Languages, string>> entries;
-		
-		public string FileName => fileName;
-		
-		public Dictionary<string, Dictionary<Languages, string>> Entries => entries;
+		public Dictionary<string, string> entries { get; set; }
 
 		// We need a constructor with Preserve attribute so unity doesn't strip it out.
 		// Stripping it will cause runtime errors when the game tries to load the localization file. 
