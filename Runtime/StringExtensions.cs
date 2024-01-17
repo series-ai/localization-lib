@@ -18,7 +18,7 @@ namespace Padoru.Localization
 			{
 				Debug.LogException(e, Constants.LOCALIZATION_LOG_CHANNEL);
 
-				return Constants.COULD_NOT_LOCALIZE_STRING;
+				return key;
 			}
 		}
 	}
