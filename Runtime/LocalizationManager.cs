@@ -27,19 +27,29 @@ namespace Padoru.Localization
 		{
 			var file = await filesLoader.LoadFile(fileUri);
 			
-			if (file != null)
-			{
-				files.Add(language, file);
-				
-				Debug.Log($"Localization file loaded {fileUri} for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
-			}
+			Debug.Log($"Localization file loaded {fileUri} for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
+
+			AddFile(language, file);
 		}
 
-		public void RegisterFile(Languages language, LocalizationFile file)
+		public void AddFile(Languages language, LocalizationFile file)
 		{
-			if (file != null && files.TryAdd(language, file))
+			if (file == null || file.entries == null || file.entries.Count <= 0)
 			{
-				Debug.Log($"Localization file registered for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
+				return;
+			}
+
+			if (!files.ContainsKey(language))
+			{
+				files.Add(language, new LocalizationFile()
+				{
+					entries = new Dictionary<string, string>()
+				});
+			}
+
+			foreach (var entry in file.entries)
+			{
+				files[language].entries.TryAdd(entry.Key, entry.Value);
 			}
 		}
 

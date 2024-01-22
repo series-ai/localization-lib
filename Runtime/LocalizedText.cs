@@ -1,16 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Padoru.Core;
 
 using Debug = Padoru.Diagnostics.Debug;
-using System;
 
 namespace Padoru.Localization
 {
 	public class LocalizedText : MonoBehaviour
 	{
-		[SerializeField] private string fileName;
 		[SerializeField] private string entryName;
 
 		private Text text;
@@ -41,6 +40,7 @@ namespace Padoru.Localization
 			UpdateText();
 		}
 
+		[ContextMenu("Localize text")]
 		private void UpdateText()
 		{
 			var localizedText = Constants.COULD_NOT_LOCALIZE_STRING;
