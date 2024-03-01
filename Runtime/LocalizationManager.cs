@@ -65,6 +65,20 @@ namespace Padoru.Localization
 			return file.entries[entryName];
 		}
 
+		public bool HasLocalizedText(string entryName)
+		{
+			var file = GetFile(CurrentLanguage);
+
+			return file.entries.ContainsKey(entryName);
+		}
+
+		public bool TryGetLocalizedText(string entryName, out string localizedText)
+		{
+			var file = GetFile(CurrentLanguage);
+
+			return file.entries.TryGetValue(entryName, out localizedText);
+		}
+
 		public void SetLanguage(Languages language)
 		{
 			CurrentLanguage = language;

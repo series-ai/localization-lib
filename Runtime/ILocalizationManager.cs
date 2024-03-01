@@ -16,5 +16,9 @@ namespace Padoru.Localization
 		void AddFile(Languages language, LocalizationFile file);
 
 		string GetLocalizedText(string entryName);
+
+		bool HasLocalizedText(string entryName);
+
+		bool TryGetLocalizedText(string entryName, out string localizedText);
 	}
 }
