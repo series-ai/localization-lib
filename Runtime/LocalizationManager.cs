@@ -67,16 +67,23 @@ namespace Padoru.Localization
 
 		public bool HasLocalizedText(string entryName)
 		{
-			var file = GetFile(CurrentLanguage);
+			if(TryGetFile(CurrentLanguage, out var file))
+			{
+				return file.entries.ContainsKey(entryName);
+			}
 
-			return file.entries.ContainsKey(entryName);
+			return false;
 		}
 
 		public bool TryGetLocalizedText(string entryName, out string localizedText)
 		{
-			var file = GetFile(CurrentLanguage);
+			if(TryGetFile(CurrentLanguage, out var file))
+			{
+				return file.entries.TryGetValue(entryName, out localizedText);
+			}
 
-			return file.entries.TryGetValue(entryName, out localizedText);
+			localizedText = Constants.COULD_NOT_LOCALIZE_STRING;
+			return false;
 		}
 
 		public void SetLanguage(Languages language)
@@ -96,6 +103,11 @@ namespace Padoru.Localization
 			}
 
 			return files[language];
+		}
+
+		private bool TryGetFile(Languages language, out LocalizationFile file)
+		{
+			return files.TryGetValue(language, out file);
 		}
 	}
 }
