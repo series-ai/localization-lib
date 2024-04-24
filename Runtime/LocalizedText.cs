@@ -11,6 +11,7 @@ namespace Padoru.Localization
 	public class LocalizedText : MonoBehaviour
 	{
 		[SerializeField] private string entryName;
+		[SerializeField] private bool useUnsafeLoc;
 
 		private Text text;
 		private TMP_Text tmpText;
@@ -47,7 +48,15 @@ namespace Padoru.Localization
 
 			try
 			{
-				localizedText = localizationManager.GetLocalizedText(entryName);
+				if (useUnsafeLoc)
+                {
+					localizedText = localizationManager.GetLocalizedText(entryName);
+				}
+				else
+                {
+					localizedText = entryName.ToLocalized();
+				}
+				
 			}
 			catch (Exception e)
 			{
