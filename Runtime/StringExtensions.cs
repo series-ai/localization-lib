@@ -16,7 +16,9 @@ namespace Padoru.Localization
             }
 
             Debug.LogWarning("Missing localized text for key: " + key, Constants.LOCALIZATION_LOG_CHANNEL);
-            return $"MISSING:{key}";
+            // Return the naked key for now https://series-ai.atlassian.net/browse/RHO-3402
+            //return $"MISSING:{key}";
+            return key;
         }
     }
 }
