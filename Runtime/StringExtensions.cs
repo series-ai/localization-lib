@@ -16,7 +16,11 @@ namespace Padoru.Localization
             }
 
             Debug.LogWarning("Missing localized text for key: " + key, Constants.LOCALIZATION_LOG_CHANNEL);
+#if NO_MISSING_LOC_PREFIX
+            return key;
+#else
             return $"MISSING:{key}";
+#endif
         }
     }
 }
