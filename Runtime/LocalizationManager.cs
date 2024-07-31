@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Debug = Padoru.Diagnostics.Debug;
 
@@ -7,8 +8,9 @@ namespace Padoru.Localization
 {
 	public class LocalizationManager : ILocalizationManager
 	{
-		private readonly ILocalizationFilesLoader filesLoader;
 		private readonly Dictionary<Languages, LocalizationFile> files = new();
+		
+		private ILocalizationFilesLoader filesLoader;
 
 		public Languages CurrentLanguage { get; private set; }
 		
@@ -23,9 +25,16 @@ namespace Padoru.Localization
 			this.filesLoader = filesLoader;
 		}
 
-		public async Task LoadFile(Languages language, string fileUri)
+		public void Shutdown()
 		{
-			var file = await filesLoader.LoadFile(fileUri);
+			filesLoader = null;
+			
+			files.Clear();
+		}
+
+		public async Task LoadFile(Languages language, string fileUri, CancellationToken cancellationToken)
+		{
+			var file = await filesLoader.LoadFile(fileUri, cancellationToken);
 			
 			Debug.Log($"Localization file loaded {fileUri} for language {language}", Constants.LOCALIZATION_LOG_CHANNEL);
 

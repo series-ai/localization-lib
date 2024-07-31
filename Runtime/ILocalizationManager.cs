@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Padoru.Localization
@@ -11,7 +12,7 @@ namespace Padoru.Localization
 
 		void SetLanguage(Languages language);
 
-		Task LoadFile(Languages language, string fileUri);
+		Task LoadFile(Languages language, string fileUri, CancellationToken cancellationToken);
 
 		void AddFile(Languages language, LocalizationFile file);
 
