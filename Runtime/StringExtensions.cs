@@ -22,5 +22,10 @@ namespace Padoru.Localization
             return $"MISSING:{key}";
 #endif
         }
+        
+        public static string ToLocalized(this string key, params object[] replacements)
+        {
+            return string.Format(key.ToLocalized(), replacements);
+        }
     }
 }
