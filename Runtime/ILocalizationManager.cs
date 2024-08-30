@@ -6,6 +6,8 @@ namespace Padoru.Localization
 {
 	public interface ILocalizationManager
 	{
+		bool UseMissingLogPrefix { get; }
+		
 		Languages CurrentLanguage { get; }
 		
 		event Action<Languages> OnLanguageChanged;

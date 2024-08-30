@@ -1,4 +1,3 @@
-using System;
 using Padoru.Core;
 using Padoru.Diagnostics;
 
@@ -6,6 +5,8 @@ namespace Padoru.Localization
 {
     public static class StringExtensions
     {
+        private const string MISSING_LOC_PREFIX = "MISSING:";
+        
         public static string ToLocalized(this string key)
         {
             var localizationManager = Locator.Get<ILocalizationManager>();
@@ -16,11 +17,13 @@ namespace Padoru.Localization
             }
 
             Debug.LogWarning("Missing localized text for key: " + key, Constants.LOCALIZATION_LOG_CHANNEL);
-#if NO_MISSING_LOC_PREFIX
+
+            if (localizationManager.UseMissingLogPrefix)
+            {
+                return $"{MISSING_LOC_PREFIX}{key}";
+            }
+            
             return key;
-#else
-            return $"MISSING:{key}";
-#endif
         }
         
         public static string ToLocalized(this string key, params object[] replacements)
