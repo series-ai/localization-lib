@@ -23,6 +23,8 @@ namespace Padoru.Localization
 
 			CurrentLanguage = startingLanguage;
 
+			UseMissingLogPrefix = useMissingLogPrefix;
+
 			this.filesLoader = filesLoader;
 		}
 
