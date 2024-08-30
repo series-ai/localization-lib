@@ -12,11 +12,12 @@ namespace Padoru.Localization
 		
 		private ILocalizationFilesLoader filesLoader;
 
+		public bool UseMissingLogPrefix { get; private set; }
 		public Languages CurrentLanguage { get; private set; }
 		
 		public event Action<Languages> OnLanguageChanged;
 
-		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage, bool useMissingLogPrefix)
 		{
 			Debug.Log($"Initialized on {startingLanguage}", Constants.LOCALIZATION_LOG_CHANNEL);
 
