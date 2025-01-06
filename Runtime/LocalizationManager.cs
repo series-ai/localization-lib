@@ -14,17 +14,17 @@ namespace Padoru.Localization
 		
 		public bool UseMissingLogPrefix { get; }
 		public Languages CurrentLanguage { get; private set; }
-		public Languages DefaultLanguage { get; set; }
+		public Languages FallbackLanguage { get; set; }
 		
 		public event Action<Languages> OnLanguageChanged;
 
-		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage, bool useMissingLogPrefix, Languages defaultLanguage = Languages.en_US)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage, bool useMissingLogPrefix, Languages fallbackLanguage = Languages.en_US)
 		{
 			Debug.Log($"Initialized on {startingLanguage}", Constants.LOCALIZATION_LOG_CHANNEL);
 
 			CurrentLanguage = startingLanguage;
 
-			DefaultLanguage = defaultLanguage;
+			FallbackLanguage = fallbackLanguage;
 			
 			UseMissingLogPrefix = useMissingLogPrefix;
 

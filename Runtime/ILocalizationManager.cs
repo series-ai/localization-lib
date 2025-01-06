@@ -10,7 +10,7 @@ namespace Padoru.Localization
 		
 		Languages CurrentLanguage { get; }
 
-		Languages DefaultLanguage { get; set; }
+		Languages FallbackLanguage { get; set; }
 		
 		event Action<Languages> OnLanguageChanged;
 
