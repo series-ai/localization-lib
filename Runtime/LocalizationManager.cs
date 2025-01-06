@@ -11,18 +11,21 @@ namespace Padoru.Localization
 		private readonly Dictionary<Languages, LocalizationFile> files = new();
 		
 		private ILocalizationFilesLoader filesLoader;
-
-		public bool UseMissingLogPrefix { get; private set; }
+		
+		public bool UseMissingLogPrefix { get; }
 		public Languages CurrentLanguage { get; private set; }
+		public Languages DefaultLanguage { get; set; }
 		
 		public event Action<Languages> OnLanguageChanged;
 
-		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage, bool useMissingLogPrefix)
+		public LocalizationManager(ILocalizationFilesLoader filesLoader, Languages startingLanguage, bool useMissingLogPrefix, Languages defaultLanguage = Languages.en_US)
 		{
 			Debug.Log($"Initialized on {startingLanguage}", Constants.LOCALIZATION_LOG_CHANNEL);
 
 			CurrentLanguage = startingLanguage;
 
+			DefaultLanguage = defaultLanguage;
+			
 			UseMissingLogPrefix = useMissingLogPrefix;
 
 			this.filesLoader = filesLoader;
@@ -65,37 +68,52 @@ namespace Padoru.Localization
 			}
 		}
 
-		public string GetLocalizedText(string entryName)
+		public string GetLocalizedTextForLanguage(string entryName, Languages language)
 		{
-			var file = GetFile(CurrentLanguage);
+			var file = GetFile(language);
 			
-			if(!file.entries.ContainsKey(entryName))
+			if (!file.entries.ContainsKey(entryName))
 			{
-				throw new Exception($"The file for {CurrentLanguage} does not contain an entry for {entryName}");
+				throw new Exception($"The file for {language} does not contain an entry for {entryName}");
 			}
 
 			return file.entries[entryName];
 		}
 
-		public bool HasLocalizedText(string entryName)
+		public string GetLocalizedText(string entryName)
 		{
-			if(TryGetFile(CurrentLanguage, out var file))
+			return GetLocalizedTextForLanguage(entryName, CurrentLanguage);
+		}
+		
+		public bool HasLocalizedTextInLanguage(string entryName, Languages languages)
+		{
+			if (TryGetFile(languages, out var file))
 			{
 				return file.entries.ContainsKey(entryName);
 			}
 
 			return false;
 		}
-
-		public bool TryGetLocalizedText(string entryName, out string localizedText)
+		
+		public bool HasLocalizedText(string entryName)
 		{
-			if(TryGetFile(CurrentLanguage, out var file))
+			return HasLocalizedTextInLanguage(entryName, CurrentLanguage);
+		}
+		
+		public bool TryGetLocalizedTextForLanguage(string entryName, Languages language, out string localizedText)
+		{
+			if (TryGetFile(language, out var file))
 			{
 				return file.entries.TryGetValue(entryName, out localizedText);
 			}
 
 			localizedText = Constants.COULD_NOT_LOCALIZE_STRING;
 			return false;
+		}
+
+		public bool TryGetLocalizedText(string entryName, out string localizedText)
+		{
+			return TryGetLocalizedTextForLanguage(entryName, CurrentLanguage, out localizedText);
 		}
 
 		public void SetLanguage(Languages language)
