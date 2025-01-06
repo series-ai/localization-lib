@@ -9,6 +9,8 @@ namespace Padoru.Localization
 		bool UseMissingLogPrefix { get; }
 		
 		Languages CurrentLanguage { get; }
+
+		Languages FallbackLanguage { get; set; }
 		
 		event Action<Languages> OnLanguageChanged;
 
@@ -18,10 +20,16 @@ namespace Padoru.Localization
 
 		void AddFile(Languages language, LocalizationFile file);
 
+		string GetLocalizedTextForLanguage(string entryName, Languages language);
+		
 		string GetLocalizedText(string entryName);
 
+		bool HasLocalizedTextInLanguage(string entryName, Languages languages);
+		
 		bool HasLocalizedText(string entryName);
 
+		bool TryGetLocalizedTextForLanguage(string entryName, Languages language, out string localizedText);
+		
 		bool TryGetLocalizedText(string entryName, out string localizedText);
 	}
 }
