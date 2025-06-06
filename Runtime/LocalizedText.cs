@@ -72,8 +72,6 @@ namespace Padoru.Localization
 			{
 				tmpText.text = localizedText;
 			}
-
-			Debug.Log($"Text updated to: {localizedText}", Constants.LOCALIZATION_LOG_CHANNEL, gameObject);
 		}
 	}
 }
